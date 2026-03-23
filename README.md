@@ -136,6 +136,49 @@ python /app/scripts/seed_data.py
 - **Frontend:** https://otimiza-rotas.preview.emergentagent.com
 - **Backend API:** https://otimiza-rotas.preview.emergentagent.com/api
 
+## 🚀 Como Fazer Deploy
+
+### Opção 1: Railway (Recomendado - Mais Fácil)
+
+```bash
+# 1. Configure MongoDB Atlas (gratuito)
+# 2. Faça push para GitHub
+# 3. Conecte Railway ao seu repositório
+# 4. Adicione variáveis de ambiente
+# 5. Pronto! Deploy automático
+
+📖 Guia rápido: DEPLOY_RAPIDO.md
+```
+
+### Opção 2: GitHub Pages + Render
+
+```bash
+# Frontend no GitHub Pages
+cd frontend
+npm run deploy
+
+# Backend no Render
+# Configure através do dashboard
+
+📖 Guia completo: DEPLOY_GUIDE.md
+```
+
+### Deploy Automático
+
+```bash
+# Execute o script
+chmod +x deploy.sh
+./deploy.sh
+```
+
+## 📦 Arquivos de Configuração
+
+- `render.yaml` - Configuração para Render
+- `vercel.json` - Configuração para Vercel  
+- `railway.json` - Configuração para Railway
+- `.gitignore` - Arquivos ignorados pelo Git
+- `deploy.sh` - Script de deploy automático
+
 ## 📝 Endpoints da API
 
 - `GET /api/` - Health check
