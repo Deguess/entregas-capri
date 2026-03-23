@@ -63,3 +63,7 @@ coverage/
 # Emergent specific
 /app/test_reports/
 /app/memory/
+-e 
+# Environment files
+*.env
+*.env.*
