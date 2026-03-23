@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus, Trash2, MapPin, Clock } from 'lucide-react';
+import { Plus, Trash2, MapPin, Clock, Search } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -8,6 +8,8 @@ const API = `${BACKEND_URL}/api`;
 
 const CadastroPedidos = () => {
   const [pedidos, setPedidos] = useState([]);
+  const [filteredPedidos, setFilteredPedidos] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     order_id: '',
     customer_name: '',
@@ -21,6 +23,21 @@ const CadastroPedidos = () => {
   useEffect(() => {
     fetchPedidos();
   }, []);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = pedidos.filter(
+        (p) =>
+          p.order_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.cep.includes(searchTerm)
+      );
+      setFilteredPedidos(filtered);
+    } else {
+      setFilteredPedidos(pedidos);
+    }
+  }, [searchTerm, pedidos]);
 
   const fetchPedidos = async () => {
     try {
@@ -220,7 +237,22 @@ const CadastroPedidos = () => {
       </div>
 
       <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-        <h2 className="text-xl font-semibold text-white mb-6">Pedidos Cadastrados</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-semibold text-white">Pedidos Cadastrados</h2>
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              data-testid="search-pedidos"
+              placeholder="Buscar por ID, cliente, endereço..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-zinc-950/50 border border-zinc-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm px-4 py-2 rounded-lg text-white w-80"
+            />
+            <span className="text-sm text-zinc-400">
+              {filteredPedidos.length} de {pedidos.length}
+            </span>
+          </div>
+        </div>
         <div className="overflow-x-auto scrollbar-custom">
           <table className="w-full">
             <thead>
@@ -234,14 +266,14 @@ const CadastroPedidos = () => {
               </tr>
             </thead>
             <tbody>
-              {pedidos.length === 0 ? (
+              {filteredPedidos.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="text-center py-8 text-zinc-500">
-                    Nenhum pedido cadastrado
+                    {searchTerm ? 'Nenhum pedido encontrado' : 'Nenhum pedido cadastrado'}
                   </td>
                 </tr>
               ) : (
-                pedidos.map((pedido) => (
+                filteredPedidos.map((pedido) => (
                   <tr key={pedido.id} data-testid={`pedido-row-${pedido.order_id}`} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
                     <td className="py-3 px-4 text-sm font-mono text-blue-400">{pedido.order_id}</td>
                     <td className="py-3 px-4 text-sm text-zinc-300">{pedido.customer_name}</td>

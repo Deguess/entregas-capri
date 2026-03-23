@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from 'react-leaflet';
 import L from 'leaflet';
-import { Route, Play, CheckCircle, AlertCircle } from 'lucide-react';
+import { Route, Play, CheckCircle, AlertCircle, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import 'leaflet/dist/leaflet.css';
 
@@ -24,15 +24,18 @@ L.Icon.Default.mergeOptions({
 
 const OtimizacaoRotas = () => {
   const [pedidos, setPedidos] = useState([]);
+  const [motoboys, setMotoboys] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [numMotoboys, setNumMotoboys] = useState(1);
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [optimizedRoutes, setOptimizedRoutes] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [timeSlots, setTimeSlots] = useState([]);
+  const [routeAssignments, setRouteAssignments] = useState({});
 
   useEffect(() => {
-    fetchPedidos();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -52,13 +55,17 @@ const OtimizacaoRotas = () => {
     }
   }, [selectedTimeSlot, pedidos]);
 
-  const fetchPedidos = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get(`${API}/pedidos`);
-      setPedidos(response.data);
+      const [pedidosRes, motoboyRes] = await Promise.all([
+        axios.get(`${API}/pedidos`),
+        axios.get(`${API}/motoboys`),
+      ]);
+      setPedidos(pedidosRes.data);
+      setMotoboys(motoboyRes.data);
     } catch (error) {
-      console.error('Erro ao buscar pedidos:', error);
-      toast.error('Erro ao carregar pedidos');
+      console.error('Erro ao buscar dados:', error);
+      toast.error('Erro ao carregar dados');
     }
   };
 
@@ -90,12 +97,57 @@ const OtimizacaoRotas = () => {
       });
 
       setOptimizedRoutes(response.data);
+      setRouteAssignments({});
       toast.success('Rotas otimizadas com sucesso!');
     } catch (error) {
       console.error('Erro ao otimizar rotas:', error);
       toast.error('Erro ao otimizar rotas');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveToHistory = async () => {
+    if (!optimizedRoutes || Object.keys(routeAssignments).length === 0) {
+      toast.error('Atribua os motoboys às rotas primeiro');
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      let savedCount = 0;
+      
+      for (const [clusterIdStr, motoboyId] of Object.entries(routeAssignments)) {
+        const clusterId = parseInt(clusterIdStr);
+        const cluster = optimizedRoutes.clusters[clusterId];
+        const motoboy = motoboys.find((m) => m.id === motoboyId);
+
+        if (cluster && motoboy) {
+          for (const pedido of cluster.pedidos) {
+            await axios.post(`${API}/historico`, {
+              order_id: pedido.order_id,
+              customer_name: pedido.customer_name,
+              address: pedido.address,
+              cep: pedido.cep,
+              delivery_time: `${pedido.delivery_start_time} - ${pedido.delivery_end_time}`,
+              distance_km: cluster.distance_km / cluster.pedidos.length,
+              motoboy_id: motoboy.id,
+              motoboy_name: motoboy.name,
+            });
+            savedCount++;
+          }
+        }
+      }
+
+      toast.success(`${savedCount} entregas salvas no histórico!`);
+      setOptimizedRoutes(null);
+      setRouteAssignments({});
+    } catch (error) {
+      console.error('Erro ao salvar histórico:', error);
+      toast.error('Erro ao salvar no histórico');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -111,9 +163,22 @@ const OtimizacaoRotas = () => {
 
   return (
     <div data-testid="rotas-page" className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">Otimização de Rotas</h1>
-        <p className="text-zinc-400">Calcule rotas otimizadas por horário de entrega</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">Otimização de Rotas</h1>
+          <p className="text-zinc-400">Calcule rotas otimizadas por horário de entrega</p>
+        </div>
+        {optimizedRoutes && Object.keys(routeAssignments).length > 0 && (
+          <button
+            data-testid="btn-save-to-history"
+            onClick={handleSaveToHistory}
+            disabled={saving}
+            className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 transition-all shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+          >
+            <Save className="w-4 h-4" />
+            {saving ? 'Salvando...' : 'Salvar no Histórico'}
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -209,11 +274,26 @@ const OtimizacaoRotas = () => {
                         className="w-4 h-4 rounded-full"
                         style={{ backgroundColor: getMarkerColor(idx) }}
                       ></div>
-                      <h4 className="text-sm font-semibold text-white">Motoboy {idx + 1}</h4>
+                      <h4 className="text-sm font-semibold text-white">Rota {idx + 1}</h4>
                     </div>
-                    <p className="text-xs text-zinc-400 mb-2">
+                    <p className="text-xs text-zinc-400 mb-3">
                       {cluster.pedidos.length} entrega(s) | {cluster.distance_km} km
                     </p>
+                    <div className="mb-3">
+                      <label className="block text-xs text-zinc-400 mb-1">Atribuir a:</label>
+                      <select
+                        value={routeAssignments[idx] || ''}
+                        onChange={(e) => setRouteAssignments({ ...routeAssignments, [idx]: e.target.value })}
+                        className="w-full bg-zinc-950/50 border border-zinc-700 focus:border-blue-500 text-xs px-2 py-1 rounded text-white"
+                      >
+                        <option value="">Selecionar motoboy</option>
+                        {motoboys.map((motoboy) => (
+                          <option key={motoboy.id} value={motoboy.id}>
+                            {motoboy.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <div className="space-y-1">
                       {cluster.pedidos.map((pedido) => (
                         <p key={pedido.id} className="text-xs font-mono text-blue-400">

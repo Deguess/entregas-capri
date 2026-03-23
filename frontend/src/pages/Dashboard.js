@@ -12,6 +12,7 @@ const Dashboard = () => {
     totalEntregas: 0,
     totalKm: 0,
   });
+  const [pedidosPorHorario, setPedidosPorHorario] = useState([]);
 
   useEffect(() => {
     fetchStats();
@@ -33,6 +34,22 @@ const Dashboard = () => {
         totalEntregas: historicoRes.data.length,
         totalKm: totalKm.toFixed(2),
       });
+
+      const horarios = {};
+      pedidosRes.data.forEach((pedido) => {
+        const slot = `${pedido.delivery_start_time} - ${pedido.delivery_end_time}`;
+        if (!horarios[slot]) {
+          horarios[slot] = 0;
+        }
+        horarios[slot]++;
+      });
+
+      const horariosList = Object.entries(horarios)
+        .map(([slot, count]) => ({ slot, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
+      setPedidosPorHorario(horariosList);
     } catch (error) {
       console.error('Erro ao buscar estatísticas:', error);
     }
@@ -113,6 +130,31 @@ const Dashboard = () => {
           <p>• <strong className="text-white">Histórico:</strong> Visualize entregas realizadas e gere relatórios PDF</p>
         </div>
       </div>
+
+      {pedidosPorHorario.length > 0 && (
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Horários com Mais Entregas</h2>
+          <div className="space-y-3">
+            {pedidosPorHorario.map((horario, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between bg-zinc-800/50 p-4 rounded-lg border border-zinc-700/50"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                    <span className="text-blue-400 font-bold text-sm">{idx + 1}</span>
+                  </div>
+                  <span className="text-white font-mono">{horario.slot}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold font-mono text-blue-400">{horario.count}</span>
+                  <span className="text-sm text-zinc-500">pedidos</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
