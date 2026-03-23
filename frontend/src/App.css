@@ -1,34 +1,57 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #09090b;
+  color: #fafafa;
+  overflow-x: hidden;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.App-link {
-    color: #61dafb;
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #18181b;
+  z-index: 0;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.leaflet-popup-content-wrapper {
+  background: #18181b;
+  color: #fafafa;
+  border: 1px solid #27272a;
+}
+
+.leaflet-popup-tip {
+  background: #18181b;
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #18181b;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }
