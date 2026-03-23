@@ -1,0 +1,152 @@
+{
+  "project_name": "Delivery Command Center",
+  "identity": {
+    "name": "E1 Tactical Logistics",
+    "theme": "dark",
+    "tone": "Precision, Speed, Reliability",
+    "archetype": "The Performance Pro",
+    "description": "A dark-mode first, high-contrast tactical dashboard for logistics management. Optimizes for low-light environments and high-density data visualization."
+  },
+  "typography": {
+    "font_family_primary": "Inter, sans-serif",
+    "font_family_secondary": "JetBrains Mono, monospace",
+    "font_weights": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "scale": {
+      "xs": "text-xs",
+      "sm": "text-sm",
+      "base": "text-base",
+      "lg": "text-lg",
+      "xl": "text-xl",
+      "2xl": "text-2xl",
+      "3xl": "text-3xl"
+    },
+    "rules": [
+      "Use 'JetBrains Mono' (or generic monospace) for ALL Order IDs, Coordinates, Time Stamps, and Tracking Numbers.",
+      "Headings should use 'Inter' with 'tracking-tight' and 'font-semibold'.",
+      "Label text (tiny uppercase) should use 'tracking-widest' and 'text-xs'."
+    ]
+  },
+  "colors": {
+    "palette": {
+      "background": "#09090b",
+      "surface": "#18181b",
+      "surface_highlight": "#27272a",
+      "border": "#27272a",
+      "text_primary": "#fafafa",
+      "text_secondary": "#a1a1aa",
+      "text_tertiary": "#71717a",
+      "brand_primary": "#3b82f6",
+      "brand_glow": "rgba(59, 130, 246, 0.5)",
+      "success": "#22c55e",
+      "warning": "#eab308",
+      "error": "#ef4444",
+      "info": "#0ea5e9"
+    },
+    "semantic": {
+      "dashboard_bg": "bg-zinc-950",
+      "card_bg": "bg-zinc-900/50 backdrop-blur-md border-zinc-800",
+      "text_main": "text-zinc-50",
+      "text_muted": "text-zinc-400",
+      "accent_action": "text-blue-500 hover:text-blue-400",
+      "status_delivered": "text-green-500 bg-green-500/10 border-green-500/20",
+      "status_pending": "text-yellow-500 bg-yellow-500/10 border-yellow-500/20",
+      "status_transit": "text-blue-500 bg-blue-500/10 border-blue-500/20"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300",
+      "secondary": "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700",
+      "ghost": "hover:bg-zinc-800/50 text-zinc-400 hover:text-white"
+    },
+    "cards": {
+      "default": "bg-zinc-900 border border-zinc-800 rounded-xl shadow-sm hover:border-zinc-700 transition-colors",
+      "glass": "bg-black/40 backdrop-blur-xl border border-white/10 rounded-xl",
+      "metric": "bg-zinc-900/50 border border-zinc-800/50 p-6 rounded-lg relative overflow-hidden group hover:border-blue-500/30 transition-all"
+    },
+    "inputs": {
+      "default": "bg-zinc-950/50 border-zinc-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm placeholder:text-zinc-600",
+      "search": "pl-10 bg-zinc-900/50 border-zinc-800 rounded-full"
+    }
+  },
+  "layout_strategies": {
+    "dashboard_grid": "grid grid-cols-1 md:grid-cols-12 gap-6",
+    "map_view": "h-[calc(100vh-4rem)] w-full relative",
+    "sidebar": "w-64 h-screen bg-zinc-950 border-r border-zinc-800 fixed left-0 top-0 flex flex-col z-50",
+    "content_area": "ml-64 p-8 min-h-screen bg-black"
+  },
+  "map_integration": {
+    "provider": "Leaflet + OpenStreetMap",
+    "tile_layer": "CartoDB Dark Matter",
+    "tile_url": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
+    "marker_style": {
+      "order": "Blue circular marker with white inner dot",
+      "courier": "Green circular marker with bike icon",
+      "depot": "White square marker with building icon"
+    },
+    "route_style": {
+      "color": "#3b82f6",
+      "weight": 4,
+      "opacity": 0.8,
+      "dashArray": "10, 10"
+    }
+  },
+  "images_and_assets": {
+    "courier_avatars": [
+      {
+        "url": "https://images.unsplash.com/photo-1665530994348-af9b4c297402?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMG9mJTIwbW90b3JjeWNsZSUyMGRlbGl2ZXJ5JTIwZHJpdmVyJTIwd2l0aCUyMGhlbG1ldHxlbnwwfHx8fDE3NzQyNDA4ODN8MA&ixlib=rb-4.1.0&q=85",
+        "alt": "Courier with helmet riding",
+        "category": "courier_profile"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1569932353341-b518d82f8a54?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwzfHxwb3J0cmFpdCUyMG9mJTIwbW90b3JjeWNsZSUyMGRlbGl2ZXJ5JTIwZHJpdmVyJTIwd2l0aCUyMGhlbG1ldHxlbnwwfHx8fDE3NzQyNDA4ODN8MA&ixlib=rb-4.1.0&q=85",
+        "alt": "Courier holding helmet",
+        "category": "courier_profile"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1709038519642-368c3fd75469?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHw0fHxwb3J0cmFpdCUyMG9mJTIwbW90b3JjeWNsZSUyMGRlbGl2ZXJ5JTIwZHJpdmVyJTIwd2l0aCUyMGhlbG1ldHxlbnwwfHx8fDE3NzQyNDA4ODN8MA&ixlib=rb-4.1.0&q=85",
+        "alt": "Courier peace sign",
+        "category": "courier_profile"
+      }
+    ],
+    "icons": {
+      "library": "lucide-react",
+      "style": "stroke-width-1.5"
+    }
+  },
+  "motion_and_interaction": {
+    "transitions": "transition-all duration-200 ease-out",
+    "hover_effects": "hover:scale-[1.02] hover:shadow-lg hover:border-blue-500/50",
+    "loading_state": "animate-pulse bg-zinc-800/50"
+  },
+  "specific_instructions": {
+    "terminology": {
+      "order": "Pedido/Ficha",
+      "courier": "Motoboy/Entregador"
+    },
+    "defaults": {
+      "start_address": "Rua Nossa Senhora das Mercês, 876 - Vila das Merces, São Paulo - SP, 04165-011",
+      "map_center": [-23.633, -46.608]
+    },
+    "logic": {
+      "time_handling": "When 'End Time' is set, automatically set 'Start Time' to 1 hour prior.",
+      "auto_cep": "On address blur, fetch CEP from Nominatim/ViaCEP API.",
+      "route_grouping": "Group orders by 'Delivery Window' (Start-End time)."
+    }
+  },
+  "universal_guidelines": [
+    "Do not use gradients for backgrounds, stick to solid dark Zinc tones.",
+    "Use subtle borders (zinc-800) to define areas, not heavy shadows.",
+    "Ensure all interactive elements have hover states (text color change or background tint).",
+    "Use 'lucide-react' for all icons.",
+    "Data tables must be compact: 'py-2 px-4'.",
+    "Map container must have 'z-0' and overlays/modals 'z-50'.",
+    "Use 'sonner' for notifications (success: route calculated, error: address not found)."
+  ]
+}
